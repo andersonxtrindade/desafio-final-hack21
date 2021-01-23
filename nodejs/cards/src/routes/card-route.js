@@ -8,4 +8,6 @@ module.exports = (app) => {
         .get(api.findOne)
         .put(api.updateOne)
         .delete(api.removeOne)
+    app.route('/paginationAndSorting')
+        .get(api.pagenationAndSorting)
 }

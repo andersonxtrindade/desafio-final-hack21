@@ -74,4 +74,17 @@ api.updateOne = (request, response) => {
     });
 }
 
+api.pagenationAndSorting = (request, response) => {
+    neDB.find({}).sort({ customerName: "Josephina" }).exec((exception, cards) => {
+        if (exception) {
+            const sentence = 'Deu ruim na tentativa de pagination!'
+            console.log(sentence, exception)
+            response.status(exception.status | 400)
+            response.json({ 'mensagem': sentence })
+        }
+        response.status(200)
+        response.json(cards)
+    })
+}
+
 module.exports = api
