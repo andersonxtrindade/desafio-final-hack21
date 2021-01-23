@@ -3,6 +3,10 @@ package com.orbitallcorp.hack21.cards.controllers;
 import com.orbitallcorp.hack21.cards.domains.Card;
 import com.orbitallcorp.hack21.cards.services.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,12 +38,6 @@ public class CardController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping(path = {"/count"})
-    public ResponseEntity count(){
-        long count = cardService.count();
-        return new ResponseEntity(count, HttpStatus.OK);
-    }
-
     @DeleteMapping(path ={"/{id}"})
     public ResponseEntity <?> delete(@PathVariable long id) {
         return cardService.findById(id)
@@ -64,5 +62,22 @@ public class CardController {
                     Card updated = cardService.save(record);
                     return ResponseEntity.ok().body(updated);
                 }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping(path = {"/count"})
+    public ResponseEntity count(){
+        long count = cardService.count();
+        return new ResponseEntity(count, HttpStatus.OK);
+    }
+
+    @GetMapping(path = {"/paginationAndSorting"})
+    public ResponseEntity<List<Card>> getAllCards(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "3") Integer pageSize,
+            @RequestParam(defaultValue = "customerName") String sortBy)
+    {
+        List<Card> list = cardService.getAllCards(pageNo, pageSize, sortBy);
+
+        return new ResponseEntity<List<Card>>(list, new HttpHeaders(), HttpStatus.OK);
     }
 }
